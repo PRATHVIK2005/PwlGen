@@ -1,8 +1,6 @@
 # PwdGen — Personalized Wordlist Generator
 
-![Tests](https://github.com/prathvikshetty17/PwdGen/actions/workflows/tests.yml/badge.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+
 
 A modular CLI tool that generates, ranks, and exports **targeted**
 password wordlists from profile data (name, DOB, pet, partner, etc.)
