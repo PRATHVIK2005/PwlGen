@@ -70,9 +70,12 @@ ranks by guessability.
 ## Installation
 
 ```bash
-git clone https://github.com/prathvikshetty17/PwdGen.git
+git clone https://github.com/PRATHVIK2005/PwlGen.git
 cd PwdGen
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
+python3 -m pytest tests/ -v
 ```
 
 ## Usage
