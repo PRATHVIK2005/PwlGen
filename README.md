@@ -1,4 +1,4 @@
-# PwdGen — Personalized Wordlist Generator
+# PwlGen — Personalized Wordlist Generator
 
 
 
@@ -71,7 +71,7 @@ ranks by guessability.
 
 ```bash
 git clone https://github.com/PRATHVIK2005/PwlGen.git
-cd PwdGen
+cd PwlGen
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
