@@ -19,7 +19,6 @@ try first.
 ## Table of Contents
 
 - [Features](#features)
-- [Architecture](#architecture)
 - [Why the ranking matters](#why-the-ranking-matters)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -27,7 +26,7 @@ try first.
 - [Testing](#testing)
 - [Roadmap](#roadmap)
 - [Legal / Ethical Use](#legal--ethical-use)
-- [Author](#author)
+
 
 ---
 
