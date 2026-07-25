@@ -64,6 +64,10 @@ def gather_inputs_interactive():
         "pet": prompt("Pet name", required=False),
         "dob": prompt("Date of birth (DDMMYYYY or blank)", required=False),
         "partner": prompt("Partner/spouse name", required=False),
+        "city": prompt("Hometown / city", required=False),
+        "mother": prompt("Mother's name", required=False),
+        "father": prompt("Father's name", required=False),
+        "sibling": prompt("Sibling's name", required=False),
         "custom": prompt("Any other keyword", required=False),
     }
     return {k: v for k, v in data.items() if v}
