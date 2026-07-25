@@ -7,7 +7,7 @@ password wordlists from profile data (name, DOB, pet, partner, etc.)
 for authorized password auditing and penetration testing engagements.
 
 Unlike generic wordlists (`rockyou.txt` and friends), which only catch
-weak/common passwords, PwdGen models how real people actually build
+weak/common passwords, PwlGen models how real people actually build
 passwords — a name, a birth year, a leetspeak swap, a common suffix —
 and generates the candidates an attacker (or an auditor) would realistically
 try first.
