@@ -63,3 +63,53 @@ def test_build_wordlist_includes_profile_derived_candidate():
     profile = {"name": "Tiger"}
     result = generator.build_wordlist(profile, include_keyboard_walks=False)
     assert any(w.lower().startswith("tiger") for w in result)
+
+
+def test_build_wordlist_handles_extended_family_fields():
+    profile = {
+        "name": "Prathvik",
+        "city": "Udupi",
+        "mother": "Asha",
+        "father": "Ramesh",
+        "sibling": "Anitha",
+        "dob": "17062005",
+    }
+    result = generator.build_wordlist(profile, include_keyboard_walks=False)
+    assert len(result) > 0
+    # candidates derived from each new field should be present in some form
+    assert any(w.lower().startswith("udupi") for w in result)
+    assert any(w.lower().startswith("asha") for w in result)
+    assert any(w.lower().startswith("ramesh") for w in result)
+    assert any(w.lower().startswith("anitha") for w in result)
+
+
+def test_separator_join_variants_word_and_token():
+    variants = generator.separator_join_variants("Prathvik", "1706")
+    assert "Prathvik@1706" in variants
+    assert "Prathvik_1706" in variants
+    assert "Prathvik.1706" in variants
+    assert "Prathvik-1706" in variants
+    assert "Prathvik#1706" in variants
+    assert "Prathvik1706" in variants
+    assert "1706@Prathvik" in variants
+
+
+def test_separator_join_variants_includes_case_variants():
+    variants = generator.separator_join_variants("Prathvik", "2005")
+    assert "PRATHVIK@2005" in variants
+    assert "prathvik@2005" in variants
+    assert "Prathvik@2005" in variants
+
+
+def test_separator_join_word_pairs():
+    variants = generator.separator_join_word_pairs("Prathvik", "Shetty")
+    assert "Prathvik@Shetty" in variants
+    assert "Shetty@Prathvik" in variants
+    assert "Prathvik_Shetty" in variants
+
+
+def test_build_wordlist_generates_name_at_date_patterns():
+    profile = {"name": "Prathvik", "dob": "17062005"}
+    result = generator.build_wordlist(profile, include_keyboard_walks=False)
+    assert "Prathvik@1706" in result or "Prathvik@2005" in result
+    assert "Prathvik_1706" in result or "Prathvik_2005" in result

@@ -24,6 +24,10 @@ COMMON_SUFFIXES = [
 
 COMMON_PREFIXES = ["", "@", "#"]
 
+# Separators people commonly use to join two pieces of personal info
+# into a password (e.g. Name@DDMM, Name_YYYY, Name-1999).
+SEPARATORS = ["", "@", "_", ".", "-", "#"]
+
 # Common keyboard-walk substrings people fall back to as password filler,
 # grouped by row/pattern so we can splice them onto profile words.
 KEYBOARD_WALKS = [
@@ -91,6 +95,39 @@ def keyboard_walk_variants(word):
     return out
 
 
+def separator_join_variants(word, token, separators=SEPARATORS, include_cases=True):
+    """
+    Explicitly generate word+separator+token combinations in both
+    orders and (optionally) across case variants of the word, e.g.
+    for word="Prathvik", token="1706" ->
+        Prathvik@1706, Prathvik_1706, Prathvik.1706, Prathvik-1706,
+        Prathvik#1706, Prathvik1706, prathvik@1706, PRATHVIK@1706,
+        1706@Prathvik, ... etc.
+
+    This models one of the most common real-world password patterns:
+    a name/word joined to a date/number with a single separator
+    character, rather than relying on leetspeak or suffix stacking
+    to accidentally produce the same shape.
+    """
+    out = set()
+    words_to_use = case_variants(word) if include_cases else {word}
+    for w in words_to_use:
+        for sep in separators:
+            out.add(f"{w}{sep}{token}")
+            out.add(f"{token}{sep}{w}")
+    return out
+
+
+def separator_join_word_pairs(word_a, word_b, separators=SEPARATORS):
+    """Same idea as separator_join_variants, but for two profile words
+    (e.g. Name@Surname, Name_Pet) rather than a word + date token."""
+    out = set()
+    for sep in separators:
+        out.add(f"{word_a}{sep}{word_b}")
+        out.add(f"{word_b}{sep}{word_a}")
+    return out
+
+
 def build_wordlist(profile, min_len=4, max_len=24, include_keyboard_walks=True):
     """
     profile: dict of field -> value, e.g.
@@ -112,14 +149,24 @@ def build_wordlist(profile, min_len=4, max_len=24, include_keyboard_walks=True):
             all_words.add(cased)
             all_words |= leet_variants(cased)
 
-    # Pairwise combination of base words
+    # Explicit separator-joined combinations: Name@DDMM, name_YYYY, etc.
+    # This is kept as its own pass (not just a side-effect of leetspeak
+    # or suffix-stacking) because word+separator+date is one of the
+    # single most common real-world password patterns.
+    separator_combos = set()
+    for word in base_words:
+        for tok in extra_tokens:
+            separator_combos |= separator_join_variants(word, tok)
+
+    # Pairwise combination of base words -- now using the full
+    # separator set (@, _, ., -, #, and no separator) instead of a
+    # narrow hardcoded subset.
     combined = set()
     word_list = list(base_words)
     for a, b in itertools.permutations(word_list, 2):
-        combined.add(f"{a}{b}")
-        combined.add(f"{a}.{b}")
-        combined.add(f"{a}_{b}")
+        combined |= separator_join_word_pairs(a, b)
     all_words |= combined
+    all_words |= separator_combos
 
     if include_keyboard_walks:
         walk_variants = set()
